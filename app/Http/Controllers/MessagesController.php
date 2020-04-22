@@ -32,10 +32,13 @@ class MessagesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(int $id = 0, String $subject = '')
     {
-        $users = User::where('id', '!=' , Auth::id())->get();
-
+        if ($id === 0) {
+            $users = User::where('id', '!=', Auth::id())->get();
+        } else {
+            $users = User::where('id', $id)->get();
+        }
         return view('create')->with('users', $users);
     }
 
@@ -47,10 +50,12 @@ class MessagesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'subject' => 'required',
             'message' => 'required'
         ]);
+
+
         $message = new Message();
         $message->user_id_from = Auth::id();
         $message->user_id_to = $request->input('to');
@@ -59,7 +64,6 @@ class MessagesController extends Controller
         $message->save();
 
         return redirect()->to('/home')->with('status', 'Message sent successfully');
-        
     }
 
     /**

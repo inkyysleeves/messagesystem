@@ -7,6 +7,8 @@
     Subject: {{ $message->subject }}
     <hr>
     Message:
-    <br>
+    <br><br>
      {{ $message->body}}
+     <hr>
+     <a href="{{ route('create', $message->userFrom->id) }}" class="btn btn-primary">Reply</a>
 @endsection
