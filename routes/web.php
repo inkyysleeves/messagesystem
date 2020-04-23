@@ -22,3 +22,6 @@ Route::get('/create/{id?}/{subject?}', 'MessagesController@create')->name('creat
 Route::post('/store', 'MessagesController@store')->name('store');
 Route::get('/sent', 'MessagesController@sent')->name('sent-messages');
 Route::get('/read/{id}', 'MessagesController@read')->name('read');
+Route::get('/delete/{id}', 'MessagesController@destroy')->name('delete');
+Route::get('/deleted', 'MessagesController@deleted')->name('deleted-messages');
+Route::get('/return/{id}', 'MessagesController@return')->name('return');

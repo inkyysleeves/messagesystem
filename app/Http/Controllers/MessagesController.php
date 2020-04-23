@@ -22,7 +22,7 @@ class MessagesController extends Controller
 
     public function index()
     {
-        $messages = Message::with('userFrom')->where('user_id_to', Auth::id())->get();
+        $messages = Message::with('userFrom')->where('user_id_to', Auth::id())->notDeleted()->get();
 
         return view('home')->with('messages', $messages);
     }
@@ -39,7 +39,9 @@ class MessagesController extends Controller
         } else {
             $users = User::where('id', $id)->get();
         }
-        return view('create')->with('users', $users);
+        if($subject !== '') $subject = 'Re:' . $subject;
+
+        return view('create')->with(['users' => $users, 'subject' => $subject] );
     }
 
     /**
@@ -74,7 +76,7 @@ class MessagesController extends Controller
      */
     public function sent()
     {
-        $messages = Message::with('userTo')->where('user_id_from', Auth::id())->get();
+        $messages = Message::with('userTo')->where('user_id_from', Auth::id())->orderBy('created_at', 'desc')->get();
         return view('sent')->with('messages', $messages);
     }
 
@@ -87,6 +89,8 @@ class MessagesController extends Controller
     public function read(int $id)
     {
         $message = Message::with('userFrom')->find($id);
+        $message->read = true;
+        $message->save();
         return view('read')->with('message', $message);
     }
 
@@ -97,9 +101,10 @@ class MessagesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function deleted()
     {
-        //
+        $messages = Message::with('userFrom')->where('user_id_to', Auth::id())->deleted()->get();
+        return view('deleted')->with('messages', $messages);
     }
 
     /**
@@ -108,8 +113,18 @@ class MessagesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        //
+        $message = Message::find($id);
+        $message->deleted = true;
+        $message->save();
+        return redirect()->to('/home')->with('status', 'Message deleted successfully');
+    }
+    public function return(int $id) {
+        $message = Message::find($id);
+        $message->deleted = false;
+        $message->save();
+
+        return redirect()->to('/home');
     }
 }

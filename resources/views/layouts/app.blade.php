@@ -29,10 +29,13 @@
                     <u>{{ config('app.name', 'Message System') }}</u>
                 </a>
                 <a class="navbar-brand " href="{{ route('create') }}">
-                    <u>Send new message.</u>
+                    <u>Send New Message.</u>
                 </a>
                 <a class="navbar-brand " href="{{ route('sent-messages') }}">
-                    <u>Sent messages.</u>
+                    <u>Sent Messages.</u>
+                </a>
+                <a class="navbar-brand " href="{{ route('deleted-messages') }}">
+                    <u>Deleted Messages.</u>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
